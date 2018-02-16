@@ -1,47 +1,22 @@
 const video = document.querySelector('video');
+// { 
+// 									width: { min: 1024, ideal: 1280, max: 1920 },
+// 								  height: { min: 776, ideal: 720, max: 1080 } 
+// 								 } 
+let constraints = {audio: false, video: {
+																	width: {min: 1280},
+																	height: {min: 720}
+																}
+								};
 
-// navigator.mediaDevices.getUserMedia({audio: false, video: true})
-// .then((mediaStream) => {
-// 	// console.log(mediaStream)
-// 	video.src = mediaStream;
-// 	video.onloadedmetadata = e => {
-// 		console.log(e)
-// 		video.play();
-// 	};
-// })
-// .catch((error) => {
-// 	console.log('error getting access: ' + error.name + ' : ' + error.message);
-// })
-
-// being deprecated, need to update
-
-navigator.getMedia = (	navigator.getUserMedia || 
-												navigator.webkitGetUserMedia ||
-												navigator.mozGetUserMedia ||
-												navigator.msGetUserMedia
-											);
-window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-
-if ( navigator.getMedia ) {
-	navigator.getMedia (
-		{
-			video: true,
-			audio: false
-		},
-
-		function(videoStream) {
-			video.src = ( window.URL && window.URL.createObjectURL(videoStream)) || videoStream;
-			video.play();
-		},
-
-
-		function(err) {
-			console.log('getUserMedia error: ' + err.code);
-		}
-
-	);
-} else {
-	console.log('getUserMedia not supported');
-}
-
+navigator.mediaDevices.getUserMedia(constraints)
+.then(function(mediaStream) {
+	video.srcObject = mediaStream;
+	video.onloadedmetadata = function(e) {
+		video.play();
+	}
+})
+.catch(function(err) {
+	console.log(err.name + ": " + err.message);
+})
 
